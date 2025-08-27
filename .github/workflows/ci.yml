@@ -1,0 +1,21 @@
+name: CI
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.x' }
+
+      # local tests
+      - run: python app_min.py "Hello, World!" | grep -q '^hello-world$'
+      - run: python app_min.py "Café au lait" | grep -q '^cafe-au-lait$'
+      - run: python app_min.py "  multiple   spaces  " | grep -q '^multiple-spaces$'
+      - run: python app_min.py "Türkçe Çalışma — Şaşırtıcı!" | grep -q '^turkce-calisma-sasirtici$'
+
+      # CLI tests
+      - run: pip install .
+      - run: nano-slug "Hello, World!" | grep -q '^hello-world$'
+      - run: nano-slug "Café au lait" | grep -q '^cafe-au-lait$'
